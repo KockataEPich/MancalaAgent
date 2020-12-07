@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="Test_Agents">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/Test_Agents/JimmyPlayer.jar!/" />
+      <root url="jar://$PROJECT_DIR$/Test_Agents/Group2Agent.jar!/" />
+      <root url="jar://$PROJECT_DIR$/Test_Agents/error404.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
