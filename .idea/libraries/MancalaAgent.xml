@@ -1,0 +1,10 @@
+<component name="libraryTable">
+  <library name="MancalaAgent">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/MKRefAgent.jar!/" />
+      <root url="jar://$PROJECT_DIR$/ManKalah.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
