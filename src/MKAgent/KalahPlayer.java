@@ -1,12 +1,16 @@
 package MKAgent;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 
+import java.io.PrintStream;
 
 public class KalahPlayer {
 
     private Side ourSide;
     private Kalah kalah;
     private int holes;
+    private int maxDepth = 2;
 
     public KalahPlayer(int holes, int seeds) {
         this.ourSide = Side.SOUTH;
@@ -34,8 +38,10 @@ public class KalahPlayer {
 
         Node rootNode = new Node(this.kalah.getBoard());
         rootNode.setDepth(0);
-        generateTree(rootNode, this.ourSide, 7);
+        rootNode.setSide(ourSide);
+        GameTree.generateTree(rootNode, this.ourSide, maxDepth, this.holes, this.kalah);
 
+        GameTree.writeBoardsToAFileDFS(rootNode);
 
         for(int i = 1; i <= this.holes; ++i)
         {
@@ -119,26 +125,5 @@ public class KalahPlayer {
     }
 
 
-    public void generateTree(Node root, Side givenSide, int maxDepth)
-    {
 
-        if(root.getDepth() > maxDepth)
-            return;
-
-        for (int i = 1; i <= this.holes; i++)
-        {
-            Move move = new Move(givenSide, i);
-            if (this.kalah.isLegalMove(move))
-            {
-                Board boardNew = new Board(root.getBoard());
-                Kalah.makeMove(boardNew, move);
-                Node newNode = new Node(boardNew);
-                newNode.setDepth(root.getDepth() + 1);
-                root.addChild(newNode);
-
-                generateTree(newNode, givenSide.opposite(), maxDepth);
-            }
-
-        }
-    }
 }

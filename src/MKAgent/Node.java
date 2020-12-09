@@ -2,17 +2,41 @@ package MKAgent;
 
 import java.util.ArrayList;
 
-public class Node {
+public class Node
+{
     private Board board;
     private Node parent;
     private int depth;
     private ArrayList<Node> children;
+    private Side side;
+    private int value;
 
-    public Node(Board currentBoard) {
+    public Node(Board currentBoard)
+    {
         board = currentBoard;
         children = new ArrayList<Node>();
         parent = null;
     }
+
+    public void setValue(int givenValue)
+    {
+        value = givenValue;
+    }//setValue
+
+    public int getValue()
+    {
+        return value;
+    }
+
+    public Side getSide()
+    {
+        return side;
+    }
+
+    public void setSide(Side givenSide)
+    {
+        side = givenSide;
+    }//setSide
 
     public int getDepth()
     {
@@ -55,8 +79,8 @@ public class Node {
         this.children.add(child);
     }//addChild
 
-    public Node getChild(Node parent, int index)
+    public Node getChild(int index)
     {
-        return parent.children.get(index);
+        return this.children.get(index);
     }//getChild
 }
