@@ -14,6 +14,7 @@ public class Main
     /**
      * Input from the game engine.
      */
+
     private static Reader input = new BufferedReader(new InputStreamReader(System.in));
 
     /**
@@ -54,6 +55,20 @@ public class Main
 	 */
 	public static void main(String[] args)
 	{
+
+		try
+		{
+			(new KalahPlayer(7, 7)).play();
+		}
+		catch (IOException var2)
+		    { System.err.println("Communication error: " + var2.getMessage());}
+		catch (InvalidMessageException var3)
+	    	{ System.err.println("THIS IS A REAL BUG: " + var3.getMessage()); }
+
+
+
+
+
 		// TODO: implement
 	}
 }
