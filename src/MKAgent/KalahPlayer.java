@@ -10,7 +10,7 @@ public class KalahPlayer {
     private Side ourSide;
     private Kalah kalah;
     private int holes;
-    private int maxDepth = 2;
+    private int maxDepth = 7;
 
     public KalahPlayer(int holes, int seeds) {
         this.ourSide = Side.SOUTH;
@@ -32,34 +32,20 @@ public class KalahPlayer {
         return ourSeeds - oppSeeds;
     }
 
-    protected int bestNextMove() {
-        int bestMove = 0;
-        int bestMoveHeuristics = Integer.MIN_VALUE;
+    protected int bestNextMove()
+    {
 
+        // Set the root node
         Node rootNode = new Node(this.kalah.getBoard());
         rootNode.setDepth(0);
         rootNode.setSide(ourSide);
-        GameTree.generateTree(rootNode, this.ourSide, maxDepth, this.holes, this.kalah);
 
-        GameTree.writeBoardsToAFileDFS(rootNode);
+        //generate the tree
+        GameTree.generateTree(rootNode, this.ourSide, maxDepth, this.holes, this.kalah, this.ourSide);
 
-        for(int i = 1; i <= this.holes; ++i)
-        {
-            Move move = new Move(this.ourSide, i);
-            if (this.kalah.isLegalMove(move))
-            {
-                Board board = new Board(this.kalah.getBoard());
-                Kalah.makeMove(board, move);
-                int heuristics = this.heuristics(board);
-                if (heuristics > bestMoveHeuristics)
-                {
-                    bestMove = i;
-                    bestMoveHeuristics = heuristics;
-                }
-            }
-        }
+        //GameTree.writeBoardsToAFileBFS(rootNode);
 
-        return bestMove;
+        return rootNode.getBestMove();
     }
 
     protected void swap() {
