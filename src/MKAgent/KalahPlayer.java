@@ -10,7 +10,7 @@ public class KalahPlayer {
     private Side ourSide;
     private Kalah kalah;
     private int holes;
-    private int maxDepth = 7;
+    private int maxDepth = 10;
 
     public KalahPlayer(int holes, int seeds)
     {
@@ -33,7 +33,8 @@ public class KalahPlayer {
         return ourSeeds - oppSeeds;
     }
 
-    public int bestNextMove(Side givenSide, int maxDepth, int currentDepth, int holes, Kalah kalah, Board board)
+    public int bestNextMove(Side givenSide, int maxDepth, int currentDepth, int holes, Kalah kalah, Board board,
+                                      int parentValue,int parentBestMove, Side parentSide)
     {
         currentDepth ++;
         // If we have reached the max given depth we evaluate the current board and start going back
@@ -55,7 +56,8 @@ public class KalahPlayer {
                 //of the board and do it again
 
                 int branchValue = bestNextMove(Kalah.makeMove(boardNew, move), maxDepth, currentDepth, holes, kalah,
-                       boardNew);
+                       boardNew, ourValue, currentBestMove, givenSide);
+
                 if (currentBestMove == 0)
                 {
                     currentBestMove = i;
@@ -67,6 +69,25 @@ public class KalahPlayer {
                     currentBestMove = i;
                     ourValue = branchValue;
                 }//if
+
+                if(currentDepth != 0 && parentBestMove != 0)
+                {
+                    if (this.ourSide != parentSide)
+                    {
+                        if (ourValue > parentValue)
+                        {
+                            return Integer.MAX_VALUE;
+                        }//if
+                    }
+
+                    if (this.ourSide == parentSide)
+                    {
+                        if (ourValue < parentValue)
+                        {
+                            return Integer.MIN_VALUE;
+                        }//if
+                    }
+                }
             }//if
         }//for
 
@@ -116,7 +137,7 @@ public class KalahPlayer {
                     if (moveTurn.again && !moveTurn.end) {
                         msg = null;
                         int nextMove = this.bestNextMove(this.ourSide, maxDepth, -1,this.holes, this.kalah,
-                                this.kalah.getBoard());
+                                this.kalah.getBoard(), 0, 0, this.ourSide);
                         if (maySwap) {
                             Board moveBoard = new Board(this.kalah.getBoard());
                             Kalah.makeMove(moveBoard, new Move(this.ourSide, nextMove));
