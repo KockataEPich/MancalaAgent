@@ -3,7 +3,7 @@ package MKAgent;
 // Class that is concerned with Evaluating the board.
 public class BoardEvaluator
 {
-    private static int mankalahModifier = 5;
+    private static int mankalahModifier = 2;
     private static int seedsModifier = 1;
 
 
@@ -15,16 +15,12 @@ public class BoardEvaluator
 
         for(int i = 1; i < board.getNoOfHoles(); i++)
         {
-            finalScoreOur += board.getSeeds(ourSide, i)*seedsModifier;
+            finalScoreOur += board.getSeeds(ourSide, i);
+            finalScoreEnemy += board.getSeeds(ourSide.opposite(), i);
         }//for
-
+        finalScoreOur *= seedsModifier;
+        finalScoreEnemy *= seedsModifier;
         finalScoreOur += board.getSeedsInStore(ourSide)*mankalahModifier;
-
-        for(int i = 1; i < board.getNoOfHoles(); i++)
-        {
-            finalScoreEnemy += board.getSeeds(ourSide.opposite(), i)*seedsModifier;
-        }//for
-
         finalScoreEnemy += board.getSeedsInStore(ourSide.opposite())*mankalahModifier;
 
         return finalScoreOur - finalScoreEnemy;
