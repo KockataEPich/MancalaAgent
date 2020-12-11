@@ -34,7 +34,7 @@ public class KalahPlayer {
     }
 
     public int bestNextMove(Side givenSide, int maxDepth, int currentDepth, int holes, Kalah kalah, Board board,
-                                      int parentValue,int parentBestMove, Side parentSide)
+                                      int givenAlpha, int givenBeta)
     {
         currentDepth ++;
         // If we have reached the max given depth we evaluate the current board and start going back
@@ -52,11 +52,10 @@ public class KalahPlayer {
             // Check if the move is legal
             if (kalah.isLegalMove(boardNew, move))
             {
-                // If it is, make it, create a new which has the state
-                //of the board and do it again
+                // If it is do it again
 
                 int branchValue = bestNextMove(Kalah.makeMove(boardNew, move), maxDepth, currentDepth, holes, kalah,
-                       boardNew, ourValue, currentBestMove, givenSide);
+                       boardNew, givenAlpha, givenBeta);
 
                 if (currentBestMove == 0)
                 {
@@ -70,24 +69,14 @@ public class KalahPlayer {
                     ourValue = branchValue;
                 }//if
 
-                if(currentDepth != 0 && parentBestMove != 0)
-                {
-                    if (this.ourSide != parentSide)
-                    {
-                        if (ourValue > parentValue)
-                        {
-                            return Integer.MAX_VALUE;
-                        }//if
-                    }
+                if (this.ourSide == givenSide && ourValue > givenAlpha)
+                    givenAlpha = ourValue;
 
-                    if (this.ourSide == parentSide)
-                    {
-                        if (ourValue < parentValue)
-                        {
-                            return Integer.MIN_VALUE;
-                        }//if
-                    }
-                }
+                if (this.ourSide != givenSide && ourValue < givenBeta)
+                    givenBeta = ourValue;
+
+                if(givenAlpha > givenBeta)
+                    return ourValue;
             }//if
         }//for
 
@@ -137,7 +126,7 @@ public class KalahPlayer {
                     if (moveTurn.again && !moveTurn.end) {
                         msg = null;
                         int nextMove = this.bestNextMove(this.ourSide, maxDepth, -1,this.holes, this.kalah,
-                                this.kalah.getBoard(), 0, 0, this.ourSide);
+                                this.kalah.getBoard(), Integer.MIN_VALUE, Integer.MAX_VALUE);
                         if (maySwap) {
                             Board moveBoard = new Board(this.kalah.getBoard());
                             Kalah.makeMove(moveBoard, new Move(this.ourSide, nextMove));
