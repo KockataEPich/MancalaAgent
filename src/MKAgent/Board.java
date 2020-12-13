@@ -282,5 +282,22 @@ public class Board extends Observable implements Cloneable
 
 		return boardString.toString();
 	}
+
+
+	public boolean equals(Board givenBoard)
+	{
+		for(int i = 1; i <= this.getNoOfHoles(); i++)
+		{
+			if(givenBoard.getSeeds(Side.SOUTH, i) != this.getSeeds(Side.SOUTH, i)
+				|| givenBoard.getSeeds(Side.NORTH, i) != this.getSeeds(Side.NORTH, i))
+				return false;
+		}
+
+		if(givenBoard.getSeedsInStore(Side.SOUTH) != this.getSeedsInStore(Side.SOUTH)
+		   || givenBoard.getSeedsInStore(Side.NORTH) != this.getSeedsInStore(Side.NORTH))
+			return false;
+
+		return true;
+	}
 }
 

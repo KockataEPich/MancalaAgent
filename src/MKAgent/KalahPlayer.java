@@ -10,7 +10,7 @@ public class KalahPlayer {
     private Side ourSide;
     private Kalah kalah;
     private int holes;
-    private int maxDepth = 10;
+    private int maxDepth = 5;
 
     public KalahPlayer(int holes, int seeds)
     {
@@ -20,9 +20,9 @@ public class KalahPlayer {
     }
 
     protected int heuristics(Board b) {
-        int ourSeeds = b.getSeedsInStore(this.ourSide);
+        int ourSeeds = 2 * b.getSeedsInStore(this.ourSide);
 
-        int oppSeeds = b.getSeedsInStore(this.ourSide.opposite());
+        int oppSeeds = 2 * b.getSeedsInStore(this.ourSide.opposite());
 
         for (int i = 1; i <= this.holes; ++i) {
             ourSeeds += b.getSeeds(this.ourSide, i);
@@ -30,11 +30,10 @@ public class KalahPlayer {
         }
 
 
-        return ourSeeds - oppSeeds;
+        return 3*ourSeeds - oppSeeds;
     }
 
-    public int bestNextMove(Side givenSide, int maxDepth, int currentDepth, int holes, Kalah kalah, Board board,
-                                      int givenAlpha, int givenBeta)
+    public int bestNextMove(Side givenSide, int maxDepth, int currentDepth, Board board,  int givenAlpha, int givenBeta)
     {
         currentDepth ++;
         // If we have reached the max given depth we evaluate the current board and start going back
@@ -44,7 +43,7 @@ public class KalahPlayer {
         int currentBestMove = 0;
         int ourValue = 0;
         // For every possible move at current possition
-        for (int i = 1; i <= holes; i++)
+        for (int i = 1; i <= this.holes; i++)
         {
             Move move = new Move(givenSide, i);
             Board boardNew = new Board(board);
@@ -54,8 +53,8 @@ public class KalahPlayer {
             {
                 // If it is do it again
 
-                int branchValue = bestNextMove(Kalah.makeMove(boardNew, move), maxDepth, currentDepth, holes, kalah,
-                       boardNew, givenAlpha, givenBeta);
+                int branchValue = bestNextMove(Kalah.makeMove(boardNew, move), maxDepth, currentDepth, boardNew,
+                                                                                                givenAlpha, givenBeta);
 
                 if (currentBestMove == 0)
                 {
@@ -95,7 +94,8 @@ public class KalahPlayer {
         String msg = Main.recvMsg();
         MsgType msgType = Protocol.getMessageType(msg);
         if (msgType != MsgType.END) {
-            if (msgType != MsgType.START) {
+            if (msgType != MsgType.START)
+            {
                 throw new InvalidMessageException("Expected a start message but got something else.");
             } else {
                 if (Protocol.interpretStartMsg(msg)) {
@@ -107,39 +107,51 @@ public class KalahPlayer {
                     maySwap = true;
                 }
 
-                while (true) {
+                while (true)
+                {
                     msg = Main.recvMsg();
                     msgType = Protocol.getMessageType(msg);
-                    if (msgType == MsgType.END) {
+                    if (msgType == MsgType.END)
+                    {
                         return;
                     }
 
-                    if (msgType != MsgType.STATE) {
+                    if (msgType != MsgType.STATE)
+                    {
                         throw new InvalidMessageException("Expected a state message but got something else.");
                     }
 
                     Protocol.MoveTurn moveTurn = Protocol.interpretStateMsg(msg, this.kalah.getBoard());
-                    if (moveTurn.move == -1) {
+                    if (moveTurn.move == -1)
+                    {
                         this.swap();
                     }
 
-                    if (moveTurn.again && !moveTurn.end) {
+                    if (moveTurn.again && !moveTurn.end)
+                    {
                         msg = null;
-                        int nextMove = this.bestNextMove(this.ourSide, maxDepth, -1,this.holes, this.kalah,
-                                this.kalah.getBoard(), Integer.MIN_VALUE, Integer.MAX_VALUE);
-                        if (maySwap) {
-                            Board moveBoard = new Board(this.kalah.getBoard());
-                            Kalah.makeMove(moveBoard, new Move(this.ourSide, nextMove));
-                            int moveHeuristics = this.heuristics(moveBoard);
-                            int swapHeuristics = -this.heuristics(this.kalah.getBoard());
-                            if (swapHeuristics > moveHeuristics) {
+
+                        int nextMove = this.bestNextMove(this.ourSide, maxDepth, -1, this.kalah.getBoard(),
+                                                                                  Integer.MIN_VALUE, Integer.MAX_VALUE);
+
+                        if (maySwap)
+                        {
+                            Board moveBoard = new Board(7,7);
+                            int anotherMove = this.bestNextMove(this.ourSide, maxDepth, -1,
+                                    moveBoard, Integer.MIN_VALUE, Integer.MAX_VALUE);
+
+                            Kalah.makeMove(moveBoard, new Move(this.ourSide, anotherMove));
+
+                            if (moveBoard.equals(this.kalah.getBoard()))
+                            {
                                 this.swap();
                                 msg = Protocol.createSwapMsg();
                             }
                         }
 
                         maySwap = false;
-                        if (msg == null) {
+                        if (msg == null)
+                        {
                             msg = Protocol.createMoveMsg(nextMove);
                         }
 
