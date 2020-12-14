@@ -112,6 +112,17 @@
     <property name="project.structure.side.proportion" value="0.22727273" />
   </component>
   <component name="RunManager">
+    <configuration default="true" type="ArquillianJUnit" factoryName="" nameIsGenerated="true">
+      <option name="arquillianRunConfiguration">
+        <value>
+          <option name="containerStateName" value="" />
+        </value>
+      </option>
+      <option name="TEST_OBJECT" value="class" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
     <configuration name="Start" type="JarApplication">
       <extension name="net.ashald.envfile">
         <option name="IS_ENABLED" value="false" />
