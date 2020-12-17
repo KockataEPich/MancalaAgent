@@ -5,6 +5,7 @@ public class BoardEvaluator {
 
     public static int mancalaWeight = 2;
     public static int holesWeight = 1;
+    public static int kalahMoveWeight = 5;
     public static int ourPercentageWeight = 1;
     public static int enemyPercentageWeight = 1;
 
@@ -12,7 +13,7 @@ public class BoardEvaluator {
     public static int evaluateBoard(Board board, Side ourSide) {
         return    (mancalaEvaluate(board,ourSide)              * mancalaWeight)
                 + (holesEvaluate(board, ourSide)               * holesWeight)
-                + repeatMovePossible(board, ourSide)
+                + (kalahMove(board, ourSide)                   * kalahMoveWeight)
                 + (ourMancalaPercentage(board, ourSide)        * ourPercentageWeight)
                 + (enemyMancalaPercentage(board, ourSide)      * enemyPercentageWeight);
     } // evaluateBoard
@@ -40,22 +41,16 @@ public class BoardEvaluator {
         return -board.getSeedsInStore(ourSide.opposite()) * 98 / 100;
     }
 
-
-    // Check for Kalah-move - read in Kalah.java
-    public static int repeatMovePossible(Board board, Side side) {
-        int seedsInPot;
-        int moves = 0;
-        Board copy = new Board(board);
+    // Check whether repeat move is possible
+    // 0-7
+    public static int kalahMove(Board board, Side ourSide) {
+        int extraMoves = 0;
 
         for (int i = 1; i <= board.getNoOfHoles(); i++) {
-            seedsInPot = board.getSeeds(side, i);
-            if (Kalah.makeMove(copy, new Move(side, i)) == side) moves++;
-            copy = new Board(board);
+            if (i + board.getSeeds(ourSide, i) == 8 || i + board.getSeeds(ourSide, i) == 23) {
+                extraMoves++;
+            }
         }
-        return moves;
+        return extraMoves;
     }
-
-
-    // TODO which stones can be captured
-    //public static int capturedEnemyStones(Board board, Side side);
 }
