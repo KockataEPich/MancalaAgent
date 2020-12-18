@@ -6,7 +6,7 @@ public class KalahPlayer {
     private Side ourSide;
     private Kalah kalah;
     protected int holes;
-    private int givenTime = 130;
+    private int givenTime = 300;
 
     private int alpha = Integer.MIN_VALUE;
     private int beta = Integer.MAX_VALUE;
