@@ -127,7 +127,6 @@ public class KalahPlayer extends Thread
 
                     if (msgType == MsgType.END)
                     {
-                        TestWeights.printWeightsAndScore(this.kalah, this.ourSide, maxDepth);
                         return;
                     }//if
 
@@ -146,19 +145,25 @@ public class KalahPlayer extends Thread
                     {
                         msg = null;
 
-                        int nextMove = this.bestNextMove(maxDepth, this.kalah.getBoard());
-
                         if (maySwap)
                         {
                             // Since there are only 7 options the opponent can take and we
                             // have a hardcoded heuristics we can have a hardcoded moves which we agree to
                             // swap on (they return a positive number for us) and a ones which we wouldn't want to.
-                            Board moveBoard = new Board(7,7);
-                            int anotherMove = this.bestNextMove(maxDepth, moveBoard);
+                            Board moveBoard1 = new Board(7,7);
+                            Move move1 = new Move(this.ourSide.opposite(), 1);
+                            Kalah.makeMove(moveBoard1, move1);
 
-                            Kalah.makeMove(moveBoard, new Move(this.ourSide, anotherMove));
+                            Board moveBoard2 = new Board(7,7);
+                            Move move2 = new Move(this.ourSide.opposite(), 2);
+                            Kalah.makeMove(moveBoard2, move2);
 
-                            if (moveBoard.equals(this.kalah.getBoard()))
+                            Board moveBoard4 = new Board(7,7);
+                            Move move4 = new Move(this.ourSide.opposite(), 4);
+                            Kalah.makeMove(moveBoard4, move4);
+
+                            if(kalah.getBoard().equals(moveBoard1) || kalah.getBoard().equals(moveBoard2)
+                            || kalah.getBoard().equals(moveBoard4))
                             {
                                 this.swap();
                                 msg = Protocol.createSwapMsg();
@@ -168,6 +173,7 @@ public class KalahPlayer extends Thread
                         maySwap = false;
                         if (msg == null)
                         {
+                            int nextMove = this.bestNextMove(maxDepth, this.kalah.getBoard());
                             msg = Protocol.createMoveMsg(nextMove);
                         }//if
 
@@ -183,9 +189,7 @@ public class KalahPlayer extends Thread
 // It is used in combination with the threads
 class Value
 {
-    // Ha
     public int value;
-
     public Value(int givenValue)
     {
         value = givenValue;
