@@ -1,5 +1,7 @@
 # MancalaAgent
 
+This project is done for the COMP34120 course semester 1
+
 A bot who playes the game ManKalah.
 The bot uses the Min-Max technique to attain the best possible move and it compliments that with Alpha-Beta pruning for faster calculations.
 
